@@ -1,27 +1,33 @@
-﻿using System;
+﻿
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+
 namespace PessoaRepository
 {
     public class PessoaService : IPessoaRepository
     {
-
         private static List<Pessoa> pessoas = new List<Pessoa>();
 
+        public PessoaService()            
+        {
+            pessoas = Arquivo.LerPessoas();
+        }
 
         public List<Pessoa> ListaPessoas()
         {
-            return pessoas;
+            return pessoas;         
         }
 
         public void AdicionarPessoa(string nome, string sobrenome, DateTime aniversario)
         {
             Pessoa pessoa = new Pessoa(nome, sobrenome, aniversario);
-            pessoas.Add(pessoa);
-
+            pessoa.Id = GerarId();
+            pessoas.Add(pessoa);      
         }
 
         public List<Pessoa> BuscarPessoa(string nome)
@@ -39,7 +45,7 @@ namespace PessoaRepository
             }
             return pessoa;
         }
-
+        
         public void EditarPessoa(Pessoa pessoa)
         {
             var pessoaEditada = BuscarPessoaPorId(pessoa.Id);
@@ -47,40 +53,47 @@ namespace PessoaRepository
             {
                 pessoaEditada.Nome = pessoa.Nome;
                 pessoaEditada.Sobrenome = pessoa.Sobrenome;
-                pessoaEditada.Aniversario = pessoa.Aniversario;
+                pessoaEditada.Aniversario = pessoa.Aniversario;               
             }
         }
               
 
-        public void RemoverPessoa(int id)
-        {
-            var pessoaDelete = BuscarPessoaPorId(id);
-            pessoas.Remove(pessoaDelete);
+        public void RemoverPessoa(Pessoa pessoa)
+        {      
+            pessoas.Remove(pessoa);            
         }
 
         public int DiasProxAniversario(DateTime aniversario)
         {
 
             DateTime proxAniversario = new(DateTime.Today.Year, aniversario.Month, aniversario.Day);
-
-
             if (DateTime.Today.Month > aniversario.Month)
             {
-
                 proxAniversario = new(DateTime.Today.Year + 1, aniversario.Month, aniversario.Day);
-
             }
             return (int)proxAniversario.Subtract(DateTime.Today).TotalDays;
         }
 
         public List<Pessoa> AniversariantesDoDia()
         {
-            pessoas.Add(new Pessoa("Camila", "N", DateTime.Now));
-
             var lista = pessoas.Where(p => p.Aniversario.Day == DateTime.Now.Day && p.Aniversario.Month == DateTime.Now.Month).ToList();
             return lista;
         }
 
+        private int GerarId()
+        {
+            Random random = new Random();
+            int id = random.Next(1, 500);
+            while (pessoas.Any(p => p.Id == id)) {
+                id = random.Next(1, 500);
+            }         
+            return id;
+        }
+
+        public void SalvarArquivo() {
+            
+            Arquivo.atualizarArquivo(pessoas);
+        }
 
     }
 }

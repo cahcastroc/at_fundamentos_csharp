@@ -8,14 +8,6 @@ namespace PessoaRepository
         public List<Pessoa> BuscarPessoa(string nome);
         public Pessoa? BuscarPessoaPorId(int id);
         public void EditarPessoa(Pessoa pessoa);
-        public void RemoverPessoa(int id);
-
-      
-
-        
-
-       
-
-       
+        public void RemoverPessoa(Pessoa pessoa);
     }
 }
