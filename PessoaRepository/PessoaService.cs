@@ -71,6 +71,10 @@ namespace PessoaRepository
             {
                 proxAniversario = new(DateTime.Today.Year + 1, aniversario.Month, aniversario.Day);
             }
+            if (DateTime.Today.Day > aniversario.Day && DateTime.Today.Month == aniversario.Month)
+            {
+                proxAniversario = new(DateTime.Today.Year + 1, aniversario.Month, aniversario.Day);
+            }           
             return (int)proxAniversario.Subtract(DateTime.Today).TotalDays;
         }
 
